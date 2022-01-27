@@ -1,0 +1,66 @@
+
+
+vi git_provider.tf 
+
+terraform {
+  required_providers {
+    github = {
+      source = "integrations/github"
+      version = "4.19.1"
+    }
+  }
+}
+
+# Provider Setup
+
+provider "github" {
+  token        = "f45h6h547667567jh"
+}
+
+vi create_git_repo.tf
+
+#  Create a Repository
+
+resource "github_repository" "terraform003" {
+  name        = "terraformlab003"
+  description = "terraform code 003"
+  
+  visibility = "public"
+
+}
+
+#  Create a Repository
+
+resource "github_repository" "tfpostgresql" {
+  name        = "postgrestf"
+  description = "terraform state postgres"
+  
+  visibility = "public"
+
+}
+
+#  Create a Repository
+
+resource "github_repository" "postgres" {
+  name        = "postgres13"
+  description = "13 postgres"
+  
+  visibility = "public"
+
+}
+
+
+
+terraform init 
+terraform plan 
+terraform apply
+
+sudo snap install gh  
+
+gh auth login -w
+
+gh auth status
+gh repo list
+gh repo view tihac49227/terraformlab002
+
+

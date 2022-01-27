@@ -1,0 +1,4 @@
+
+apt install graphviz -y 
+terraform graph -no-color | grep -v -e 'meta.count-boundary' -e 'provider.google(close)' | dot -T png >graph2.png
+terraform graph | dot -T png >graph.png

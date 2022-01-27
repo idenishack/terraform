@@ -1,0 +1,58 @@
+
+
+https://www.hashicorp.com/blog/managing-github-with-terraform
+
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
+https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository
+
+https://cli.github.com/manual/gh_repo_view
+
+vi git_provider.tf 
+
+terraform {
+  required_providers {
+    github = {
+      source = "integrations/github"
+      version = "4.19.1"
+    }
+  }
+}
+
+# Provider Setup
+
+provider "github" {
+  token        = "34t3g344#$%$%$h$^^$h^$^"
+}
+
+vi create_git_repo.tf
+
+#  Create a Repository
+
+resource "github_repository" "terraform001" {
+  name        = "terraformlab001"
+  description = "terraform code 001"
+  
+  visibility = "public"
+
+}
+
+cat -n {git_provider.tf,create_git_repo.tf}
+
+terraform init ; terraform plan ; terraform apply
+
+https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+
+sudo apt update ; sudo apt -y install gh
+
+sudo snap install gh  
+
+gh auth login -w
+
+gh auth login --with-token < mytoken.txt
+echo {{your_token}} | gh auth login --with-token
+
+gh auth status
+gh repo list
+gh repo view kayiwiw364/terraformlab001
+

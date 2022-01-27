@@ -1,0 +1,91 @@
+
+vi git_provider.tf 
+
+terraform {
+  required_providers {
+    github = {
+      source = "integrations/github"
+      version = "4.19.1"
+    }
+  }
+}
+
+# Provider Setup
+
+provider "github" {
+  token        = "667j67j7k578k78k78k2435f456r"
+}
+
+vi create_dev_env_git_repo.tf
+
+#  Create a Repository for Development
+
+resource "github_repository" "Development" {
+  name        = "dev"
+  description = "Development environment"
+  
+  visibility = "public"
+
+}
+
+#  Create a Repository for Testing
+
+resource "github_repository" "Testing" {
+  name        = "test"
+  description = "Testing environment"
+  
+  visibility = "public" 
+
+}
+
+#  Create a Repository for Staging
+
+resource "github_repository" "Staging" {
+  name        = " stag"
+  description = "Staging environment"
+  
+  visibility = "public"
+
+}
+
+#  Create a Repository for Production
+
+resource "github_repository" "Production" {
+  name        = " Prod"
+  description = "Production environment"
+  
+  visibility = "public"
+
+}
+
+terraform init 
+terraform plan 
+terraform apply
+
+sudo snap install gh  
+
+gh auth login -w
+
+gh auth status
+gh repo list
+gh repo view tihac49227/terraformlab002
+
+ 
+gh repo list
+gh repo view kayiwiw364/terraformlab00333
+gh repo delete tihac49227/postgres13 --confirm
+ 
+gh repo list | awk '{print $1}' 
+gh repo delete  tihac49227/postgrestf123qwe  --confirm
+gh repo list 
+
+terraform apply -auto-approve && gh repo list
+ 
+gh repo list ; read repo ; gh repo delete $repo --confirm
+ 
+terraform state list 
+terraform state show proxmox_lxc.ubuntu_21
+terraform state rm proxmox_lxc.ubuntu_21
+terraform state pull > pve.lxc.tfstate
+terraform state push pve.lxc.tfstate
+

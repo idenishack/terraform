@@ -1,0 +1,130 @@
+https://www.terraform.io/language/settings/backends/pg
+
+apt -y install postgresql-13
+
+vi /etc/postgresql/13/main/postgresql.conf
+grep listen_addresses /etc/postgresql/13/main/postgresql.conf
+listen_addresses = '*' 	        	
+
+grep -v -E "^#|^$" /etc/postgresql/13/main/pg_hba.conf
+host    all             all             192.168.1.0/24             md5
+
+systemctl restart postgresql
+
+ss -lntp4 | grep -i postgres
+
+adduser tfusr
+
+su - postgres
+
+createuser tfusr
+createdb tfdb -O tfusr
+psql -c "select usename from pg_user;"
+
+psql -l
+psql tfdb
+\password
+
+psql -c "alter user tfusr with password '123qwe123';"
+psql -h 127.0.0.1 -d tfdb -U tfusr -c "\l+"
+
+
+vi backend_pg_tfstate.tf
+
+terraform {
+  backend "pg" {
+    conn_str = "postgres://tfusr:123qwe123@127.0.0.1/tfdb?sslmode=disable"
+  }
+}
+
+terraform init
+terraform apply
+
+terraform init && terraform apply -auto-approve
+
+psql -h 127.0.0.1 -d tfdb -U tfusr -c "\l+"
+
+psql -h 127.0.0.1 -d tfdb -U tfusr 
+
+\dt+ terraform_remote_state.states
+\d terraform_remote_state.states
+
+SELECT * FROM terraform_remote_state.states;
+SELECT name,data FROM terraform_remote_state.states;
+
+TRUNCATE terraform_remote_state.states;
+
+psql -h 127.0.0.1 -d tfdb -U tfusr -c "SELECT * FROM terraform_remote_state.states"
+
+gh repo list
+gh repo view kayiwiw364/terraformlab001
+
+####################################################################
+
+ll -ht /etc/postgresql/13/main/
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/postgresql/13/main/pg-tf.key -out /etc/postgresql/13/main/pg-tf.crt
+openssl req -x509 -nodes -days 31 -newkey rsa:4096 -keyout /etc/postgresql/13/main/pg-tf.key -out /etc/postgresql/13/main/pg-tf.crt
+
+openssl dhparam -out /etc/postgresql/13/main/dhparams.pem 4096
+
+chmod -v 600 /etc/postgresql/13/main/pg-tf*
+chown -v postgres:postgres /etc/postgresql/13/main/pg-tf*
+chown -v postgres:postgres /etc/postgresql/13/main/dhparams.pem
+
+https://syslink.pl/cipherlist/
+
+vi /etc/postgresql/13/main/postgresql.conf
+
+ssl = on
+ssl_ciphers = 'EECDH+AESGCM:EDH+AESGCM'
+password_encryption = on
+ssl_cert_file = '/etc/postgresql/13/main/pg-tf.crt'
+ssl_key_file = '/etc/postgresql/13/main/pg-tf.key'
+ssl_dh_params_file = '/etc/postgresql/13/main/dhparams.pem'
+
+/etc/postgresql/13/main/pg_hba.conf
+# IPv4 local connections:
+# host    all             all             192.168.1.0/24          md5
+hostssl all             all            192.168.1.0/24           md5
+
+psql testdb
+TRUNCATE terraform_remote_state.states;
+
+systemctl restart postgresql ; tail -f /var/log/postgresql/postgresql-13-main.log 
+
+openssl s_client -connect 192.168.1.123:5432 -msg
+
+psql -h 127.0.0.1 -d tfdb -U tfusr
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off
+psql -h 127.0.0.1 -d tfdb -U tfusr -c "SELECT * FROM terraform_remote_state.states"
+
+psql -h 127.0.0.1 -d tfdb -U tfusr
+TRUNCATE terraform_remote_state.states;
+
+vi backend_pg_tfstate.tf
+
+terraform {
+  backend "pg" {
+    conn_str = "postgres://tfusr:123qwe123@192.168.1.147/tfdb"
+  }
+}
+
+terraform init && terraform apply -auto-approve
+
+psql -h 192.168.1.123 -d tfdb -U tfusr -c "SELECT * FROM terraform_remote_state.states"
+ 
+gh repo list
+gh repo view kayiwiw364/terraformlab00333
+gh repo delete tihac49227/postgres13 --confirm
+ 
+gh repo list | awk '{print $1}' 
+gh repo delete  tihac49227/postgrestf123qwe  --confirm
+gh repo list 
+ 
+terraform state list 
+terraform state show proxmox_lxc.ubuntu_21
+terraform state rm proxmox_lxc.ubuntu_21
+terraform state pull > pve.lxc.tfstate
+terraform state push pve.lxc.tfstate
+
